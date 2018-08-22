@@ -10,9 +10,9 @@ from time import sleep
 POMODORO_LENGTH = 25 * 60
 BREAK_LENGTH = 5 * 60
 
-BEEMINDER_KEY = environ['BEEMINDER_KEY']
-USER = environ['BEEMINDER_USER']
-GOAL = environ['BEEMINDER_GOAL']
+BEEMINDER_KEY = ''
+USER = ''
+GOAL = ''
 
 BEEMINDER_API_ENDPOINT = "https://www.beeminder.com/api/v1/{}"
 BEEMINDER_POST_ENDPOINT = BEEMINDER_API_ENDPOINT.format(
@@ -62,6 +62,7 @@ def pomodoro(activity, length=POMODORO_LENGTH):
     say_print('pomodoro_start')
     timer(length)
     say_print('pomodoro_over')
+    send_notification(activity, 'face-cool')
 
     say_print('transferring')
     send_data(activity)
@@ -69,6 +70,12 @@ def pomodoro(activity, length=POMODORO_LENGTH):
     say_print('break_start')
     timer(BREAK_LENGTH)
     say_print('break_over')
+
+
+def send_notification(activity, expression):
+    cmd = "notify-send '%s Pomodoro' '%s Done!' -u critical -i %s"\
+            % (GOAL, activity, expression)
+    system(cmd)
 
 
 def main():
