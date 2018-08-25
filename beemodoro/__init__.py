@@ -6,6 +6,7 @@ from os import (
 from sys import argv
 from requests import post
 from time import sleep
+import platform
 
 POMODORO_LENGTH = 25 * 60
 BREAK_LENGTH = 5 * 60
@@ -73,9 +74,18 @@ def pomodoro(activity, length=POMODORO_LENGTH):
 
 
 def send_notification(activity, expression):
-    cmd = "notify-send '%s Pomodoro' '%s Done!' -u critical -i %s"\
-            % (GOAL, activity, expression)
+    os = check_operating_system()
+    if os == 'Linux':
+        cmd = "notify-send '%s Pomodoro' '%s Done!' -i %s"\
+              % (GOAL, activity, expression)
+    elif os == 'Darwin':
+        cmd = 'osascript -e \'display notification "%s 🍺" with title "%s" sound name "default"\''\
+              % (activity, GOAL)
     system(cmd)
+
+
+def check_operating_system():
+    return platform.system()
 
 
 def main():
